@@ -1,0 +1,40 @@
+trigger EngagementRate on Contact (before insert, before update) {
+    
+    /*for (Contact con : trigger.new){
+        Contact oldCon = Trigger.oldMap.get(con.Id);
+        
+        //resolve null pointer errors
+        if(oldCon.Pardot_Emails_Opened__c == null){
+            Con.Pardot_Emails_Opened__c = 0;
+            
+        }
+        if(oldCon.Pardot_Links_Clicked__c == null){
+            con.Pardot_Links_Clicked__c =0;
+        }
+        if(oldCon.pi__score__c == null){
+            oldCon.pi__score__c = 0;
+        }
+        
+        Integer oldPardotScore = oldCon.pi__score__c.intValue();
+        Integer newPardotScore = con.pi__score__c.intValue();
+        Integer emailsOpened   = oldCon.Pardot_Emails_Opened__c.intValue();
+        Integer linksClicked   = oldCon.Pardot_Links_Clicked__c.intValue();
+        system.debug('old Pardot Score:' + oldPardotScore);
+        system.debug('new Pardot Score:' + newPardotScore);
+        system.debug('Emails Opened:' + emailsOpened);
+        system.debug('Links Clicked:' + linksClicked);
+        
+        if(newPardotScore - oldPardotScore >0 && newPardotScore - oldPardotScore < 2){
+            con.Pardot_Emails_Opened__c = emailsOpened + 1;            
+        }else if(newPardotScore - oldPardotScore > 1){
+            con.Pardot_Links_Clicked__c = linksClicked + 1; 
+            con.Pardot_Emails_Opened__c = emailsOpened + 1;
+        }
+        
+    }
+*/
+}
+// compare old pardot to new pardot score
+// If they are changed get value of change
+// If changed by 1, increment emails by 1
+// If changed by more than 1 increment email and clicks by one.
