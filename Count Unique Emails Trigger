@@ -1,0 +1,27 @@
+trigger CountUniqueEmails on relationship_owner__c (after insert, after update){
+   /* Map<Id, Contact> contactMap = new Map<Id, Contact>([SELECT Id, New_Relationship_owner1__c
+                                                        FROM Contact 
+                                                        WHERE New_Relationship_owner1__c IN :Trigger.newMap.keySet()]);    
+    List<Task> taskList = [SELECT Id, WhoId,Subject
+                          FROM Task 
+                          WHERE WhoId IN :contactMap.keySet()];
+    
+   Map<Id, Set<String>> subjectLineMap = new Map<Id, Set<String>>();
+    
+    for(Task t: taskList) {
+        Id relationshipOwnerId = contactMap.get(t.WhoId).New_Relationship_owner1__c;
+        
+        if(!subjectLIneMap.containsKey(relationshipOwnerId)){
+            subjectLineMap.put(relationshipOwnerId, new Set<String>());
+        }
+        subjectLineMap.get(relationshipOwnerId).add(t.Subject);
+        //system.debug('unique subject count=' + subjectLineMap);
+        
+        Integer emailCount = subjectLineMap.size();
+        system.debug('email count+=' + emailCount);
+    }
+    
+    
+    
+    */
+}
