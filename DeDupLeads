@@ -1,0 +1,34 @@
+//From David Liu Apex Axademy
+
+trigger DeDupLeads on Lead (before insert) {
+    //put SOQL outside of trigger to save resources
+     Group dataQualityGroup = [SELECT id                               		  
+                                     FROM GROUP
+                                     WHERE DeveloperName = 'Data Quality'
+                                     LIMIT 1];
+    //get contacts with matching email
+    for(Lead newLead : Trigger.new){
+        List<Contact> matchingContacts =[ SELECT ID,
+                                        FirstName,
+                               			LastName
+                                       	FROM Contact
+                                       	WHERE Email = : newLead.Email];       
+        system.debug('matching contacts found' + matchingContacts.size());
+        
+        //if matches are found
+        If(!matchingContacts.isEmpty()){
+           
+                newLead.ownerId = dataQualityGroup.Id;
+            String duplicateContactsMessage = 'Duplicate Contact/s found \n';
+            For(Contact c : matchingContacts){
+                duplicateContactsMessage += c.Id + ' ' 
+                    							+ c.FirstName + ' '
+                    							+ c.LastName;
+                c.Description = duplicateContactsMessage;
+                
+            }
+            
+        }
+    }
+
+}
