@@ -1,0 +1,44 @@
+<apex:page controller="OppSummaryController" showHeader="false" sidebar="false" lightningStylesheets="true">
+    <apex:pageBlock title="Opportunity Stages">
+        <apex:pageBlockTable value="{!oppStages}" var="stage">
+            <apex:column value="{!stage}" headerValue="Stage"/>
+            <apex:column value="{!oppStages[Stage]}" headerValue="# Opps"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+</apex:page>
+//custom controller is below
+public with sharing class OppSummaryController {
+    
+    //vf properties
+    public Map<String, Integer> oppStages {get; set; }
+    
+    //constructor
+    public OppSummaryController(){
+        oppStages = new Map<String, Integer>();
+        for(AggregateResult ar : [SELECT StageName, Count(Id) cnt FROM Opportunity GROUP BY StageName] ){
+            //cast values to add to map. 
+            oppStages.put((String) ar.get('StageName'), (Integer) ar.get('cnt'));
+        }
+    }
+
+}
+//test class is below
+@istest
+public class OppSummaryController_Test {
+    @istest
+    private static void controllerTest(){
+        Account acc = new Account(name = 'Acc1');
+        insert acc;
+        Opportunity opp = new Opportunity(AccountId=acc.Id, Name = 'Opp1', StageName = 'Prospecting', CloseDate =Date.today());
+        insert opp;
+       oppSummaryController ctrl = new oppSummaryController();
+        test.startTest();
+        Map<String, Integer> testStages = ctrl.oppstages;
+        test.stopTest();
+        system.assertEquals(testStages.size(),1 );
+            
+        
+    }
+
+}
