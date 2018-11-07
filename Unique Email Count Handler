@@ -1,0 +1,102 @@
+/**
+* Created by Brooks Johnson on 10/15/2018.
+* This class counts unique emails sent via Pardot
+* by comparing subject lines. 
+*/
+
+public  class UniqueEmailCountHandler {
+    
+    public static void uniqueRelationshipOwnerEmails(List<relationship_owner__c> roList){
+        //count the unique emails  that have been sent by a relationship owner
+        // add all contacts associated with relationship owner to map.         
+        Map<id, Contact> contactMap = new Map<Id, Contact>([SELECT Id,
+                                                            New_Relationship_Owner1__c
+                                                            FROM Contact
+                                                            WHERE New_Relationship_owner1__c IN : roList]);
+        system.debug('Number of relationship owners in trigger = ' + roList.size());
+        system.debug('Contacts found = ' + contactMap.size());
+        //put tasks where whoId is in the contact map into a new map
+        List<Task> taskList = [SELECT Id, WhoId,Subject
+                               FROM Task 
+                               WHERE WhoId IN :contactMap.keySet()
+                               AND Subject LIKE '%Pardot List %'];
+        system.debug('Tasks Found  and added to map = ' + taskList.size());
+        
+        //use set to dedupe the list
+        Map<Id, Set<String>> subjectLineMap = new Map<Id, Set<String>>();
+        
+        for(task t : taskList){
+            Id ownerId = contactMap.get(t.WhoId).New_Relationship_Owner1__c;            
+            if(!subjectLineMap.containsKey(ownerId)){
+                subjectLineMap.put(ownerId, new Set<String>());
+                system.debug('Subect Line found ' + t.Subject);              
+                
+            }
+            Set<String> subjects = subjectLineMap.get(OwnerId);
+            subjects.add(t.Subject);
+            subjectLineMap.put(OwnerId, Subjects);
+            
+        }
+        system.debug('Map size   =' + subjectLineMap.size());
+        system.debug('map values =' + subjectLineMap.values());
+        system.debug('map keys   =' + subjectLineMap.Keyset());
+        if(taskList.size() > 0){
+            for(relationship_owner__c relationshipOwner : roList){
+                relationshipOwner.Unique_Emails_Sent__c = subjectLIneMap.get(relationshipOwner.Id).size();
+                
+            }
+            
+            
+            
+            
+            
+        }                   
+    }
+    
+    public static void uniqueRegionEmails(List<Region__c> regionList){
+        //count the unique emails  that have been  recieved by Influencers 
+        //Assinged to a region
+        // add all contacts associated with region to map. 
+        system.debug('Number of regions in trigger' + regionList.size());        
+        Map<id, Contact> contactMap = new Map<Id, Contact>([SELECT Id,
+                                                            Region_Lookup__c                                                            
+                                                            FROM Contact
+                                                            WHERE region_lookup__c IN : regionList]);
+        system.debug('Number of regions in trigger = ' + regionList.size());
+        system.debug('Contacts found = ' + contactMap.size());
+        //put tasks where whoId is in the contact map into a new map
+        List<Task> taskList = [SELECT Id, WhoId,Subject
+                               FROM Task 
+                               WHERE WhoId IN :contactMap.keySet()
+                               AND Subject LIKE '%Pardot List %'];
+        system.debug('Tasks Found  and added to map = ' + taskList.size());
+        
+        //use set to dedupe the list
+        Map<Id, Set<String>> subjectLineMap = new Map<Id, Set<String>>();
+        
+        for(task t : taskList){
+            Id regionId = contactMap.get(t.WhoId).region_lookup__c;            
+            if(!subjectLineMap.containsKey(regionId)){
+                subjectLineMap.put(regionId, new Set<String>());
+                system.debug('Subect Line found ' + t.Subject);              
+                
+            }
+            Set<String> subjects = subjectLineMap.get(regionId);
+            subjects.add(t.Subject);
+            subjectLineMap.put(regionId, Subjects);
+            
+        }
+        system.debug('Map size   =' + subjectLineMap.size());
+        system.debug('map values =' + subjectLineMap.values());
+        system.debug('map keys   =' + subjectLineMap.Keyset());
+        if(taskList.size() > 0){
+            for(region__c region : regionList){
+                region.Unique_Emails_Sent__c = subjectLIneMap.get(region.Id).size();
+            }           
+            
+            
+        }                   
+    }
+    
+    
+}
